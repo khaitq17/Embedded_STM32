@@ -21,7 +21,7 @@ int main(void)
 
 void RCC_Config(void)
 {
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE);
 }
 
 void GPIO_Config(void)
@@ -32,7 +32,7 @@ void GPIO_Config(void)
 	GPIO_InitStruct.GPIO_Mode = GPIO_Mode_Out_PP;
 	GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
 	
-	GPIO_Init(GPIOB, &GPIO_InitStruct);
+	GPIO_Init(GPIOC, &GPIO_InitStruct);
 }
 
 void delay(uint32_t timedelay)
@@ -43,12 +43,12 @@ void delay(uint32_t timedelay)
 void chaseLed(uint8_t loop)
 {
 	uint16_t LedVal;
-	GPIO_Write(GPIOB, 0x00);
+	GPIO_Write(GPIOC, 0x00);
 	for(uint8_t i=0;i<loop;i++){
 		LedVal = 0x08;
 		for(int j=0;j<5;j++){
 			LedVal = LedVal << 1;
-			GPIO_Write(GPIOB, LedVal);
+			GPIO_Write(GPIOC, LedVal);
 			delay(2000000);
 		}
 	}

@@ -1,10 +1,13 @@
 #include "stm32f10x.h"                
 #include "stm32f10x_gpio.h"            
-#include "stm32f10x_rcc.h"              
+#include "stm32f10x_rcc.h"  
+#include "stm32f10x_tim.h"              
+
 
 void RCC_Config(void);
 void GPIO_Config(void);
-void delay(uint32_t timedelay);
+void TIM_Config(void);
+void delay_ms(uint16_t timedelay);
 void chaseLed(void);
 
 int main()
@@ -15,7 +18,7 @@ int main()
 	{
 		if(GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_0) == RESET)
 		{
-			delay(50);
+			delay_ms(50);
 			while(GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_0) == RESET)
 			{
 				chaseLed();
@@ -28,6 +31,7 @@ void RCC_Config(void)
 {
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE);
+	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
 }
 
 void GPIO_Config(void)
@@ -49,9 +53,25 @@ void GPIO_Config(void)
 	GPIO_Init(GPIOC, &GPIO_Init_Output);
 }
 
-void delay(uint32_t timedelay)
+void TIM_Config(void)
 {
-	for(uint32_t i=0;i<timedelay;i++){}
+	
+	TIM_TimeBaseInitTypeDef TIM_TimeBaseInitStruct;
+	
+	TIM_TimeBaseInitStruct.TIM_ClockDivision = TIM_CKD_DIV1;	// 72MHz
+	TIM_TimeBaseInitStruct.TIM_Prescaler = 7200 - 1;
+	TIM_TimeBaseInitStruct.TIM_Period = 0xFFFF - 1;
+	TIM_TimeBaseInitStruct.TIM_CounterMode = TIM_CounterMode_Up;
+	
+	TIM_TimeBaseInit(TIM2, &TIM_TimeBaseInitStruct);
+	
+	TIM_Cmd(TIM2, ENABLE);
+}
+
+void delay_ms(uint16_t timedelay)
+{
+	TIM_SetCounter(TIM2, 0);
+	while(TIM_GetCounter(TIM2) < timedelay * 10){}
 }
 
 void chaseLed(void)
@@ -60,6 +80,6 @@ void chaseLed(void)
 	for(int i=0;i<5;i++){
 		LedVal = LedVal << 1;
 		GPIO_Write(GPIOC, LedVal);
-		delay(5000000);
+		delay_ms(5000);
 	}
 }

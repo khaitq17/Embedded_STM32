@@ -3,7 +3,7 @@
  * Auto generated Run-Time-Environment Configuration File
  *      *** Do not modify ! ***
  *
- * Project: 'Timer_delay_ms' 
+ * Project: 'Bai 2' 
  * Target:  'Target 1' 
  */
 
