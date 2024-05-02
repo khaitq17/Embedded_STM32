@@ -1,6 +1,6 @@
-#include "stm32f10x.h"          
+#include "stm32f10x.h"                
 #include "stm32f10x_gpio.h"             
-#include "stm32f10x_rcc.h"             
+#include "stm32f10x_rcc.h"              
 #include "stm32f10x_tim.h"             
 
 void RCC_Config(void);
@@ -9,16 +9,14 @@ void TIM_Config(void);
 void delay_ms(uint16_t timedelay);
 void chaseLed(uint8_t loop);
 
-
 int main()
-{
+{	
 	RCC_Config();
 	GPIO_Config();
 	TIM_Config();
-	
 	while(1)
 	{
-		chaseLed(5);
+		chaseLed(3);
 	}
 }
 
@@ -43,12 +41,13 @@ void TIM_Config(void)
 {
 	TIM_TimeBaseInitTypeDef TIM_TimeBaseInitStruct;
 	
-	TIM_TimeBaseInitStruct.TIM_ClockDivision = TIM_CKD_DIV1; // 72MHz
+	TIM_TimeBaseInitStruct.TIM_ClockDivision = TIM_CKD_DIV1;	// 72MHz
 	TIM_TimeBaseInitStruct.TIM_Prescaler = 7200 - 1;
 	TIM_TimeBaseInitStruct.TIM_Period = 0xFFFF - 1;
 	TIM_TimeBaseInitStruct.TIM_CounterMode = TIM_CounterMode_Up;
 	
 	TIM_TimeBaseInit(TIM2, &TIM_TimeBaseInitStruct);
+	
 	TIM_Cmd(TIM2, ENABLE);
 }
 
@@ -62,20 +61,16 @@ void chaseLed(uint8_t loop)
 {
 	uint16_t LedVal;
 	GPIO_Write(GPIOC, 0x00);
-	for(int i = 0; i < loop; i++){
+	for(uint8_t i=0;i<loop;i++){
 		LedVal = 0x08;
-		for(int j = 0; j < 5; j++){
+		for(int j=0;j<5;j++){
 			LedVal = LedVal << 1;
 			GPIO_Write(GPIOC, LedVal);
-			delay_ms(5000);		// 5000ms = 5s
+			delay_ms(5000);	// 5000 ms = 5 s
+			}
 		}
-	}
 }
-
-
-
-
-
+		
 
 
 
